@@ -676,7 +676,7 @@
             font-weight: 700;
             cursor: pointer;
             width: 100%;
-            transition: background 0.2s;
+            transition: background-color 0.2s;
         }
 
         .btn-checkout:hover {
@@ -787,9 +787,9 @@
     <div class="container">
         <main class="menu">
             
-            <!-- CLÁSICAS -->
+            <!-- CLÁSICAS (50gr) -->
             <section class="category">
-                <h2>Clásicas</h2>
+                <h2>Clásicas (50gr)</h2>
                 <div class="grid">
                     <div class="card" data-name="Chocolate Chips" data-price="4000" data-images="img/chocolate-chips.jpg,img/chocolate-chips-2.jpg">
                         <div class="card-gallery-wrap">
@@ -845,9 +845,9 @@
                 </div>
             </section>
 
-            <!-- RELLENAS -->
+            <!-- RELLENAS (80gr) -->
             <section class="category">
-                <h2>Rellenas</h2>
+                <h2>Rellenas (80gr)</h2>
                 <div class="grid">
                     <div class="card" data-name="Alfajor" data-price="7500" data-images="img/alfajor.jpg,img/alfajor-2.jpg">
                         <div class="card-gallery-wrap">
@@ -1403,7 +1403,6 @@
             if (touchEndX - touchStartX > 45) prevModalImage();
         }, { passive: true });
 
-        // Inicializar sliders en cards y estado general
         initCardGalleries();
         updateApp();
     </script>
