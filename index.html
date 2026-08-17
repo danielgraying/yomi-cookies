@@ -128,7 +128,6 @@
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        /* Hover solo en dispositivos con mouse */
         @media (hover: hover) and (pointer: fine) {
             .card:hover {
                 transform: translateY(-3px);
@@ -451,7 +450,6 @@
             .container { padding: 16px; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             
-            /* Bloqueamos cualquier desplazamiento en mobile */
             .card { 
                 padding: 12px; 
                 transform: none !important;
@@ -516,7 +514,7 @@
 
     <header>
         <div class="header-container">
-            <img src="img/logo.png" alt="Logo de la Marca" class="logo-placeholder">
+            <img src="img/logo.png" alt="Logo Yomi Cookies" class="logo-placeholder">
             <button class="cart-trigger-btn" onclick="toggleCartDrawer()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="9" cy="21" r="1"></circle>
@@ -842,10 +840,9 @@
                 alert("Agrega algunas galletas primero.");
                 return;
             }
-    
-            // Número destino: +58 424-7551113
+            
             const phoneNumber = "584247551113";
-    
+            
             let total = 0;
             let totalItems = 0;
             let itemsList = "";
@@ -856,7 +853,7 @@
                 totalItems += item.quantity;
                 itemsList += `• ${item.quantity}x ${item.name} (${formatCOP(itemSubtotal)})\n`;
             });
-    
+            
             let text = `🍪 *¡Nuevo Pedido - Yomi Cookies!* 🍪\n\n`;
             text += `*Detalle del pedido:*\n`;
             text += itemsList;
