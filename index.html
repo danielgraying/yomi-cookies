@@ -284,12 +284,37 @@
             color: #000;
         }
 
+        .cart-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .clear-cart-btn {
+            background: none;
+            border: 1px solid #eee;
+            color: #888;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .clear-cart-btn:hover {
+            color: var(--brand-red);
+            border-color: var(--brand-red);
+            background-color: rgba(211, 4, 58, 0.05);
+        }
+
         .close-cart-btn {
             background: none;
             border: none;
             font-size: 22px;
             cursor: pointer;
             color: #888;
+            line-height: 1;
         }
 
         .cart-items {
@@ -611,7 +636,10 @@
     <aside class="cart-drawer" id="cart-drawer">
         <div class="cart-header">
             <h3>Tu Pedido</h3>
-            <button class="close-cart-btn" onclick="toggleCartDrawer()">✕</button>
+            <div class="cart-header-actions">
+                <button class="clear-cart-btn" id="clear-cart-btn" onclick="clearCart()">Vaciar</button>
+                <button class="close-cart-btn" onclick="toggleCartDrawer()">✕</button>
+            </div>
         </div>
         <div class="cart-items" id="cart-items">
             <p style="color: #888; text-align: center; margin-top: 20px; font-size: 14px;">El carrito está vacío</p>
@@ -654,6 +682,12 @@
                 const item = cart.find(item => item.name === name);
                 if (item) item.quantity = qty;
             }
+            updateApp();
+        }
+
+        function clearCart() {
+            if (cart.length === 0) return;
+            cart = [];
             updateApp();
         }
 
@@ -702,6 +736,7 @@
             const cartItemsContainer = document.getElementById('cart-items');
             const cartTotalElement = document.getElementById('cart-total');
             const headerCartBadge = document.getElementById('header-cart-badge');
+            const clearCartBtn = document.getElementById('clear-cart-btn');
             
             cartItemsContainer.innerHTML = '';
             let total = 0;
@@ -736,6 +771,9 @@
 
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = '<p style="color: #888; text-align: center; margin-top: 20px; font-size: 14px;">El carrito está vacío</p>';
+                if (clearCartBtn) clearCartBtn.style.display = 'none';
+            } else {
+                if (clearCartBtn) clearCartBtn.style.display = 'inline-block';
             }
 
             cartTotalElement.innerText = formatCOP(total);
