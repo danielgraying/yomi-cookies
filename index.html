@@ -136,13 +136,83 @@
             }
         }
 
-        .card-img {
+        /* Card Gallery Container */
+        .card-gallery-wrap {
+            position: relative;
             width: 100%;
             aspect-ratio: 1 / 1;
-            object-fit: cover;
             border-radius: 12px;
             margin-bottom: 12px;
+            overflow: hidden;
             background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            user-select: none;
+            transition: opacity 0.15s ease;
+        }
+
+        .card-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(4px);
+            border: none;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #222;
+            cursor: pointer;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            transition: transform 0.1s ease, background-color 0.15s ease;
+        }
+
+        .card-nav-btn:active {
+            transform: translateY(-50%) scale(0.9);
+        }
+
+        .card-nav-btn.prev { left: 8px; }
+        .card-nav-btn.next { right: 8px; }
+
+        .card-dots {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: none;
+            gap: 4px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.38);
+            padding: 3px 6px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+        }
+
+        .card-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .card-dot.active {
+            background: #fff;
+            transform: scale(1.25);
         }
 
         .card-title {
@@ -628,10 +698,9 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important;
             }
 
-            .card-img { 
-                aspect-ratio: 1 / 1;
-                border-radius: 10px;
+            .card-gallery-wrap { 
                 margin-bottom: 10px;
+                border-radius: 10px;
             }
 
             .card-title { font-size: 14px; }
@@ -723,7 +792,12 @@
                 <h2>Clásicas</h2>
                 <div class="grid">
                     <div class="card" data-name="Chocolate Chips" data-price="4000" data-images="img/chocolate-chips.jpg,img/chocolate-chips-2.jpg">
-                        <img src="img/chocolate-chips.jpg" alt="Chocolate Chips" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/chocolate-chips.jpg" alt="Chocolate Chips" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Chocolate Chips</h3>
                         <p class="card-desc">Galleta de vainilla con gotas de chocolate.</p>
                         <div class="card-price">$4.000 COP</div>
@@ -731,7 +805,12 @@
                     </div>
 
                     <div class="card" data-name="Red Velvet Chips" data-price="4000" data-images="img/red-velvet-chips.jpg,img/red-velvet-chips-2.jpg">
-                        <img src="img/red-velvet-chips.jpg" alt="Red Velvet Chips" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/red-velvet-chips.jpg" alt="Red Velvet Chips" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Red Velvet Chips</h3>
                         <p class="card-desc">Galleta de red velvet con gotas de chocolate blanco.</p>
                         <div class="card-price">$4.000 COP</div>
@@ -739,7 +818,12 @@
                     </div>
 
                     <div class="card" data-name="Doble Chocolate" data-price="4000" data-images="img/doble-chocolate.jpg,img/doble-chocolate-2.jpg">
-                        <img src="img/doble-chocolate.jpg" alt="Doble Chocolate" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/doble-chocolate.jpg" alt="Doble Chocolate" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Doble Chocolate</h3>
                         <p class="card-desc">Galleta de chocolate con gotas de chocolate blanco.</p>
                         <div class="card-price">$4.000 COP</div>
@@ -747,7 +831,12 @@
                     </div>
 
                     <div class="card" data-name="Choco-Nuez" data-price="4000" data-images="img/choco-nuez.jpg,img/choco-nuez-2.jpg">
-                        <img src="img/choco-nuez.jpg" alt="Choco-Nuez" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/choco-nuez.jpg" alt="Choco-Nuez" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Choco-Nuez</h3>
                         <p class="card-desc">Galleta de vainilla con gotas de chocolate y trozo de nuez de nogal tostada.</p>
                         <div class="card-price">$4.000 COP</div>
@@ -761,7 +850,12 @@
                 <h2>Rellenas</h2>
                 <div class="grid">
                     <div class="card" data-name="Alfajor" data-price="7500" data-images="img/alfajor.jpg,img/alfajor-2.jpg">
-                        <img src="img/alfajor.jpg" alt="Alfajor" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/alfajor.jpg" alt="Alfajor" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Alfajor</h3>
                         <p class="card-desc">Galleta de vainilla con coco natural rallado, rellena de dulce de leche.</p>
                         <div class="card-price">$7.500 COP</div>
@@ -769,7 +863,12 @@
                     </div>
 
                     <div class="card" data-name="Nuez y Dulce de Leche" data-price="7500" data-images="img/nuez-dulce-de-leche.jpg,img/nuez-dulce-de-leche-2.jpg">
-                        <img src="img/nuez-dulce-de-leche.jpg" alt="Nuez y Dulce de Leche" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/nuez-dulce-de-leche.jpg" alt="Nuez y Dulce de Leche" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Nuez y Dulce de Leche</h3>
                         <p class="card-desc">Galleta de vainilla con trozos de nuez de nogal, rellena de dulce de leche.</p>
                         <div class="card-price">$7.500 COP</div>
@@ -777,7 +876,12 @@
                     </div>
 
                     <div class="card" data-name="Cookies 'N Cream" data-price="8500" data-images="img/cookies-n-cream.jpg,img/cookies-n-cream-2.jpg">
-                        <img src="img/cookies-n-cream.jpg" alt="Cookies 'N Cream" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/cookies-n-cream.jpg" alt="Cookies 'N Cream" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Cookies 'N Cream</h3>
                         <p class="card-desc">Galleta de vainilla con trozos de galleta oreo y gotas de chocolate blanco rellena de crema oreo.</p>
                         <div class="card-price">$8.500 COP</div>
@@ -785,7 +889,12 @@
                     </div>
 
                     <div class="card" data-name="Nutella" data-price="8500" data-images="img/nutella.jpg,img/nutella-2.jpg">
-                        <img src="img/nutella.jpg" alt="Nutella" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/nutella.jpg" alt="Nutella" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Nutella</h3>
                         <p class="card-desc">Galleta de vainilla con gotas de chocolate, rellena de nutella.</p>
                         <div class="card-price">$8.500 COP</div>
@@ -793,7 +902,12 @@
                     </div>
 
                     <div class="card" data-name="Red Velvet Oreo Cheesecake" data-price="8500" data-images="img/red-velvet-oreo-cheesecake.jpg,img/red-velvet-oreo-cheesecake-2.jpg">
-                        <img src="img/red-velvet-oreo-cheesecake.jpg" alt="Red Velvet Oreo Cheesecake" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/red-velvet-oreo-cheesecake.jpg" alt="Red Velvet Oreo Cheesecake" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Red Velvet Oreo Cheesecake</h3>
                         <p class="card-desc">Galleta red velvet con trozos de galleta oreo y gotas de chocolate blanco, rellena de queso crema.</p>
                         <div class="card-price">$8.500 COP</div>
@@ -801,7 +915,12 @@
                     </div>
 
                     <div class="card" data-name="Carrot Cheesecake" data-price="8500" data-images="img/carrot-cheesecake.jpg,img/carrot-cheesecake-2.jpg">
-                        <img src="img/carrot-cheesecake.jpg" alt="Carrot Cheesecake" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/carrot-cheesecake.jpg" alt="Carrot Cheesecake" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Carrot Cheesecake</h3>
                         <p class="card-desc">Galleta de vainilla con canela, trozos de nuez de nogal tostados y zanahoria finamente rayada rellena de queso crema.</p>
                         <div class="card-price">$8.500 COP</div>
@@ -809,7 +928,12 @@
                     </div>
 
                     <div class="card" data-name="Pie de Limón" data-price="8500" data-images="img/pie-de-limon.jpg,img/pie-de-limon-2.jpg">
-                        <img src="img/pie-de-limon.jpg" alt="Pie de Limón" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pie-de-limon.jpg" alt="Pie de Limón" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pie de Limón</h3>
                         <p class="card-desc">Galleta con ralladura de limón, trozos de galleta oreo golden y gotas de chocolate blanco rellena de crema de pie de limón.</p>
                         <div class="card-price">$8.500 COP</div>
@@ -817,7 +941,12 @@
                     </div>
 
                     <div class="card" data-name="Pistacho Vainilla" data-price="9500" data-images="img/pistacho-vainilla.jpg,img/pistacho-vainilla-2.jpg">
-                        <img src="img/pistacho-vainilla.jpg" alt="Pistacho Vainilla" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pistacho-vainilla.jpg" alt="Pistacho Vainilla" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pistacho Vainilla</h3>
                         <p class="card-desc">Galleta de vainilla con trozos de pistachos tostados y gotas de chocolate blanco rellena de crema artesanal de pistacho.</p>
                         <div class="card-price">$9.500 COP</div>
@@ -825,7 +954,12 @@
                     </div>
 
                     <div class="card" data-name="Pistacho Chocolate" data-price="12500" data-images="img/pistacho-chocolate.jpg,img/pistacho-chocolate-2.jpg">
-                        <img src="img/pistacho-chocolate.jpg" alt="Pistacho Chocolate" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pistacho-chocolate.jpg" alt="Pistacho Chocolate" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pistacho Chocolate</h3>
                         <p class="card-desc">Galleta de chocolate con trozos de pistachos tostados y gotas de chocolate blanco rellena de crema artesanal de pistacho.</p>
                         <div class="card-price">$12.500 COP</div>
@@ -839,7 +973,12 @@
                 <h2>Para Compartir</h2>
                 <div class="grid">
                     <div class="card" data-name="Pack Mini Chocochips" data-price="18500" data-images="img/pack-mini-chocochips.jpg,img/pack-mini-chocochips-2.jpg">
-                        <img src="img/pack-mini-chocochips.jpg" alt="Pack Mini Chocochips" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pack-mini-chocochips.jpg" alt="Pack Mini Chocochips" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pack Mini Chocochips</h3>
                         <p class="card-desc">180gr de mini galletas de vainilla con gotas de chocolate (~50 mini galletas).</p>
                         <div class="card-price">$18.500 COP</div>
@@ -847,7 +986,12 @@
                     </div>
 
                     <div class="card" data-name="Yomi Pack" data-price="52000" data-images="img/yomi-pack.jpg,img/yomi-pack-2.jpg">
-                        <img src="img/yomi-pack.jpg" alt="Yomi Pack" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/yomi-pack.jpg" alt="Yomi Pack" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Yomi Pack</h3>
                         <p class="card-desc">20 galletas de 40gr con topping de gotas de chocolate (10 de vainilla y 10 de chocolate).</p>
                         <div class="card-price">$52.000 COP</div>
@@ -855,7 +999,12 @@
                     </div>
 
                     <div class="card" data-name="Pack Mini Rellenas (x50)" data-price="82000" data-images="img/pack-mini-rellenas-50.jpg,img/pack-mini-rellenas-50-2.jpg">
-                        <img src="img/pack-mini-rellenas-50.jpg" alt="Pack Mini Rellenas x50" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pack-mini-rellenas-50.jpg" alt="Pack Mini Rellenas x50" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pack Mini Rellenas (x50)</h3>
                         <p class="card-desc">Galletas de vainilla con topping de gotas de chocolate blanco y de leche, rellenas de chocolate y chocolate blanco (50 galletas). *Pedido con min. 3h de anticipación.</p>
                         <div class="card-price">$82.000 COP</div>
@@ -863,7 +1012,12 @@
                     </div>
 
                     <div class="card" data-name="Pack Mini Rellenas (x100)" data-price="148000" data-images="img/pack-mini-rellenas-100.jpg,img/pack-mini-rellenas-100-2.jpg">
-                        <img src="img/pack-mini-rellenas-100.jpg" alt="Pack Mini Rellenas x100" class="card-img">
+                        <div class="card-gallery-wrap">
+                            <button class="card-nav-btn prev" onclick="changeCardImage(event, this, -1)" aria-label="Anterior">❮</button>
+                            <img src="img/pack-mini-rellenas-100.jpg" alt="Pack Mini Rellenas x100" class="card-img">
+                            <button class="card-nav-btn next" onclick="changeCardImage(event, this, 1)" aria-label="Siguiente">❯</button>
+                            <div class="card-dots"></div>
+                        </div>
                         <h3 class="card-title">Pack Mini Rellenas (x100)</h3>
                         <p class="card-desc">Galletas de vainilla con topping de gotas de chocolate blanco y de leche, rellenas de chocolate y chocolate blanco (100 galletas). *Pedido con min. 3h de anticipación.</p>
                         <div class="card-price">$148.000 COP</div>
@@ -960,24 +1114,87 @@
             document.getElementById('cart-overlay').classList.toggle('active');
         }
 
+        /* Card Inline Gallery Controls */
+        function initCardGalleries() {
+            document.querySelectorAll('.card').forEach(card => {
+                const customImages = card.getAttribute('data-images');
+                if (!customImages) return;
+                const images = customImages.split(',').map(s => s.trim()).filter(Boolean);
+                if (images.length <= 1) return;
+
+                const secondaryImages = images.slice(1);
+                const checkPromises = secondaryImages.map(url => {
+                    return new Promise(resolve => {
+                        const testImg = new Image();
+                        testImg.onload = () => resolve(url);
+                        testImg.onerror = () => resolve(null);
+                        testImg.src = url;
+                    });
+                });
+
+                Promise.all(checkPromises).then(results => {
+                    const validList = [images[0], ...results.filter(Boolean)];
+                    if (validList.length > 1) {
+                        card.dataset.validImages = JSON.stringify(validList);
+                        card.dataset.currentIndex = "0";
+
+                        const prevBtn = card.querySelector('.card-nav-btn.prev');
+                        const nextBtn = card.querySelector('.card-nav-btn.next');
+                        const dotsEl = card.querySelector('.card-dots');
+
+                        if (prevBtn) prevBtn.style.display = 'flex';
+                        if (nextBtn) nextBtn.style.display = 'flex';
+                        if (dotsEl) {
+                            dotsEl.style.display = 'flex';
+                            renderCardDots(card, validList, 0);
+                        }
+                    }
+                });
+            });
+        }
+
+        function changeCardImage(e, btn, direction) {
+            e.stopPropagation();
+            const card = btn.closest('.card');
+            const validImagesStr = card.dataset.validImages;
+            if (!validImagesStr) return;
+            const images = JSON.parse(validImagesStr);
+            let currentIndex = parseInt(card.dataset.currentIndex || "0");
+            currentIndex = (currentIndex + direction + images.length) % images.length;
+            card.dataset.currentIndex = currentIndex;
+
+            const imgEl = card.querySelector('.card-img');
+            if (imgEl) {
+                imgEl.src = images[currentIndex];
+            }
+            renderCardDots(card, images, currentIndex);
+        }
+
+        function renderCardDots(card, images, activeIdx) {
+            const dotsEl = card.querySelector('.card-dots');
+            if (!dotsEl) return;
+            dotsEl.innerHTML = images.map((_, idx) => `
+                <span class="card-dot ${idx === activeIdx ? 'active' : ''}"></span>
+            `).join('');
+        }
+
         /* Modal & Dynamic Multi-Image Validation */
         function openProductModal(card) {
             const name = card.getAttribute('data-name');
             const price = card.getAttribute('data-price');
-            const primaryImg = card.querySelector('.card-img').getAttribute('src');
             const desc = card.querySelector('.card-desc').innerText;
+            const primaryImg = card.querySelector('.card-img').getAttribute('src');
 
-            const customImages = card.getAttribute('data-images');
-            const declaredImages = customImages 
-                ? customImages.split(',').map(s => s.trim()).filter(Boolean)
-                : [primaryImg];
+            const validImagesStr = card.dataset.validImages;
+            const imagesList = validImagesStr ? JSON.parse(validImagesStr) : [primaryImg];
+            const startIdx = parseInt(card.dataset.currentIndex || "0");
 
             activeModalProduct = { 
                 name, 
                 price: parseFloat(price), 
-                image: declaredImages[0],
-                images: [declaredImages[0]], // Se inicializa con la principal
-                currentIndex: 0,
+                image: imagesList[0],
+                images: imagesList,
+                currentIndex: startIdx < imagesList.length ? startIdx : 0,
                 desc 
             };
 
@@ -990,27 +1207,6 @@
 
             document.getElementById('product-modal').classList.add('active');
             document.getElementById('product-modal-overlay').classList.add('active');
-
-            // Valida en segundo plano si las imágenes adicionales existen en el servidor
-            if (declaredImages.length > 1) {
-                const secondaryImages = declaredImages.slice(1);
-                let checkPromises = secondaryImages.map(url => {
-                    return new Promise(resolve => {
-                        const testImg = new Image();
-                        testImg.onload = () => resolve(url);
-                        testImg.onerror = () => resolve(null);
-                        testImg.src = url;
-                    });
-                });
-
-                Promise.all(checkPromises).then(results => {
-                    const validExtras = results.filter(Boolean);
-                    if (activeModalProduct && activeModalProduct.name === name) {
-                        activeModalProduct.images = [declaredImages[0], ...validExtras];
-                        renderModalGallery();
-                    }
-                });
-            }
         }
 
         function renderModalGallery() {
@@ -1218,7 +1414,7 @@
             if (e.key === 'ArrowLeft') prevModalImage();
         });
 
-        /* Swipe en Mobile para la Galería */
+        /* Swipe en Mobile para el Modal */
         let touchStartX = 0;
         let touchEndX = 0;
         const galleryEl = document.getElementById('pm-gallery');
@@ -1233,6 +1429,8 @@
             if (touchEndX - touchStartX > 45) prevModalImage();
         }, { passive: true });
 
+        // Inicializar sliders en cards y estado general
+        initCardGalleries();
         updateApp();
     </script>
 </body>
