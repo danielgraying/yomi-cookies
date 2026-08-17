@@ -148,6 +148,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: pan-y;
         }
 
         .card-img {
@@ -156,6 +157,7 @@
             object-fit: cover;
             display: block;
             user-select: none;
+            pointer-events: none;
             transition: opacity 0.15s ease;
         }
 
@@ -163,30 +165,31 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.88);
+            background: rgba(255, 255, 255, 0.55);
             backdrop-filter: blur(4px);
             border: none;
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: none;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
-            color: #222;
+            color: rgba(0, 0, 0, 0.7);
             cursor: pointer;
             z-index: 2;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.1s ease, background-color 0.15s ease;
         }
 
         .card-nav-btn:active {
             transform: translateY(-50%) scale(0.9);
+            background: rgba(255, 255, 255, 0.85);
         }
 
-        .card-nav-btn.prev { left: 8px; }
-        .card-nav-btn.next { right: 8px; }
+        .card-nav-btn.prev { left: 6px; }
+        .card-nav-btn.next { right: 6px; }
 
         .card-dots {
             position: absolute;
@@ -196,17 +199,18 @@
             display: none;
             gap: 4px;
             z-index: 2;
-            background: rgba(0, 0, 0, 0.38);
+            background: rgba(0, 0, 0, 0.35);
             padding: 3px 6px;
             border-radius: 10px;
             backdrop-filter: blur(4px);
+            pointer-events: none;
         }
 
         .card-dot {
             width: 5px;
             height: 5px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.45);
             transition: background 0.2s, transform 0.2s;
         }
 
@@ -393,6 +397,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            touch-action: pan-y;
         }
 
         .product-modal-img {
@@ -400,6 +405,7 @@
             height: 100%;
             object-fit: cover;
             transition: opacity 0.15s ease;
+            pointer-events: none;
         }
 
         .gallery-nav-btn {
@@ -702,6 +708,17 @@
                 margin-bottom: 10px;
                 border-radius: 10px;
             }
+
+            .card-nav-btn {
+                width: 20px;
+                height: 20px;
+                font-size: 8px;
+                background: rgba(255, 255, 255, 0.45);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            }
+
+            .card-nav-btn.prev { left: 4px; }
+            .card-nav-btn.next { right: 4px; }
 
             .card-title { font-size: 14px; }
             .card-desc { font-size: 11px; margin-bottom: 8px; }
@@ -1047,6 +1064,7 @@
     <script>
         let cart = JSON.parse(localStorage.getItem('cookie_cart')) || [];
         let activeModalProduct = null;
+        let isCardSwiping = false;
 
         function saveCart() {
             localStorage.setItem('cookie_cart', JSON.stringify(cart));
@@ -1088,7 +1106,7 @@
             document.getElementById('cart-overlay').classList.toggle('active');
         }
 
-        /* Card Inline Gallery Controls */
+        /* Card Inline Gallery Controls & Swipe */
         function initCardGalleries() {
             document.querySelectorAll('.card').forEach(card => {
                 const customImages = card.getAttribute('data-images');
@@ -1122,13 +1140,40 @@
                             dotsEl.style.display = 'flex';
                             renderCardDots(card, validList, 0);
                         }
+
+                        // Attach Swipe to Card Gallery Wrap
+                        const wrap = card.querySelector('.card-gallery-wrap');
+                        let touchStartX = 0;
+                        let touchStartY = 0;
+
+                        wrap.addEventListener('touchstart', e => {
+                            touchStartX = e.changedTouches[0].screenX;
+                            touchStartY = e.changedTouches[0].screenY;
+                        }, { passive: true });
+
+                        wrap.addEventListener('touchend', e => {
+                            const touchEndX = e.changedTouches[0].screenX;
+                            const touchEndY = e.changedTouches[0].screenY;
+                            const diffX = touchStartX - touchEndX;
+                            const diffY = touchStartY - touchEndY;
+
+                            if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+                                isCardSwiping = true;
+                                if (diffX > 0) {
+                                    changeCardImage(e, wrap.querySelector('.card-nav-btn.next'), 1);
+                                } else {
+                                    changeCardImage(e, wrap.querySelector('.card-nav-btn.prev'), -1);
+                                }
+                                setTimeout(() => { isCardSwiping = false; }, 200);
+                            }
+                        }, { passive: true });
                     }
                 });
             });
         }
 
         function changeCardImage(e, btn, direction) {
-            e.stopPropagation();
+            if (e && e.stopPropagation) e.stopPropagation();
             const card = btn.closest('.card');
             const validImagesStr = card.dataset.validImages;
             if (!validImagesStr) return;
@@ -1154,6 +1199,8 @@
 
         /* Modal & Dynamic Multi-Image Validation */
         function openProductModal(card) {
+            if (isCardSwiping) return;
+
             const name = card.getAttribute('data-name');
             const price = card.getAttribute('data-price');
             const desc = card.querySelector('.card-desc').innerText;
