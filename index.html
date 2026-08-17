@@ -309,15 +309,83 @@
             font-weight: 700;
             color: #222;
             cursor: pointer;
-            z-index: 2;
+            z-index: 3;
             box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        /* Modal Gallery & Slider */
+        .product-modal-gallery {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: #f0f0f0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .product-modal-img {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            height: 100%;
             object-fit: cover;
-            background-color: #f0f0f0;
+            transition: opacity 0.15s ease;
+        }
+
+        .gallery-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            border: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: #222;
+            cursor: pointer;
+            z-index: 2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .gallery-nav-btn:active {
+            transform: translateY(-50%) scale(0.92);
+        }
+
+        .gallery-nav-btn.prev { left: 12px; }
+        .gallery-nav-btn.next { right: 12px; }
+
+        .gallery-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.35);
+            padding: 4px 8px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .gallery-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .gallery-dot.active {
+            background: #fff;
+            transform: scale(1.3);
         }
 
         .product-modal-content {
@@ -692,7 +760,8 @@
             <section class="category">
                 <h2>Rellenas</h2>
                 <div class="grid">
-                    <div class="card" data-name="Alfajor" data-price="7500">
+                    <!-- Ejemplo con múltiples imágenes: añade data-images separadas por comas -->
+                    <div class="card" data-name="Alfajor" data-price="7500" data-images="img/alfajor.jpg,img/alfajor-2.jpg">
                         <img src="img/alfajor.jpg" alt="Alfajor" class="card-img">
                         <h3 class="card-title">Alfajor</h3>
                         <p class="card-desc">Galleta de vainilla con coco natural rallado, rellena de dulce de leche.</p>
@@ -806,11 +875,18 @@
         </main>
     </div>
 
-    <!-- Product Modal / Lightbox -->
+    <!-- Product Modal / Lightbox Slider -->
     <div class="product-modal-overlay" id="product-modal-overlay" onclick="closeProductModal()"></div>
     <div class="product-modal" id="product-modal">
         <button class="product-modal-close" onclick="closeProductModal()" aria-label="Cerrar modal">✕</button>
-        <img src="" alt="" class="product-modal-img" id="pm-img">
+        
+        <div class="product-modal-gallery" id="pm-gallery">
+            <button class="gallery-nav-btn prev" id="pm-prev" onclick="prevModalImage(event)" aria-label="Imagen anterior">❮</button>
+            <img src="" alt="" class="product-modal-img" id="pm-img">
+            <button class="gallery-nav-btn next" id="pm-next" onclick="nextModalImage(event)" aria-label="Imagen siguiente">❯</button>
+            <div class="gallery-dots" id="pm-dots"></div>
+        </div>
+
         <div class="product-modal-content">
             <h3 class="product-modal-title" id="pm-title"></h3>
             <p class="product-modal-desc" id="pm-desc"></p>
@@ -885,25 +961,77 @@
             document.getElementById('cart-overlay').classList.toggle('active');
         }
 
-        /* Modal Logic */
+        /* Modal & Multi-Image Gallery Logic */
         function openProductModal(card) {
             const name = card.getAttribute('data-name');
             const price = card.getAttribute('data-price');
-            const img = card.querySelector('.card-img').src;
+            const primaryImg = card.querySelector('.card-img').getAttribute('src');
             const desc = card.querySelector('.card-desc').innerText;
 
-            activeModalProduct = { name, price: parseFloat(price), image: img, desc };
+            // Soporta data-images="img/foto.jpg,img/foto-2.jpg,img/foto-3.jpg"
+            const customImages = card.getAttribute('data-images');
+            const imagesList = customImages 
+                ? customImages.split(',').map(s => s.trim()).filter(Boolean)
+                : [primaryImg];
 
-            document.getElementById('pm-img').src = img;
-            document.getElementById('pm-img').alt = name;
+            activeModalProduct = { 
+                name, 
+                price: parseFloat(price), 
+                image: imagesList[0],
+                images: imagesList,
+                currentIndex: 0,
+                desc 
+            };
+
             document.getElementById('pm-title').innerText = name;
             document.getElementById('pm-desc').innerText = desc;
             document.getElementById('pm-price').innerText = formatCOP(parseFloat(price));
 
+            renderModalGallery();
             renderModalButton();
 
             document.getElementById('product-modal').classList.add('active');
             document.getElementById('product-modal-overlay').classList.add('active');
+        }
+
+        function renderModalGallery() {
+            if (!activeModalProduct) return;
+            const imgEl = document.getElementById('pm-img');
+            const prevBtn = document.getElementById('pm-prev');
+            const nextBtn = document.getElementById('pm-next');
+            const dotsContainer = document.getElementById('pm-dots');
+            const { images, currentIndex, name } = activeModalProduct;
+
+            imgEl.src = images[currentIndex];
+            imgEl.alt = `${name} - Foto ${currentIndex + 1}`;
+
+            if (images.length > 1) {
+                prevBtn.style.display = 'flex';
+                nextBtn.style.display = 'flex';
+                dotsContainer.style.display = 'flex';
+
+                dotsContainer.innerHTML = images.map((_, idx) => `
+                    <span class="gallery-dot ${idx === currentIndex ? 'active' : ''}"></span>
+                `).join('');
+            } else {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+                dotsContainer.style.display = 'none';
+            }
+        }
+
+        function nextModalImage(e) {
+            if (e) e.stopPropagation();
+            if (!activeModalProduct || activeModalProduct.images.length <= 1) return;
+            activeModalProduct.currentIndex = (activeModalProduct.currentIndex + 1) % activeModalProduct.images.length;
+            renderModalGallery();
+        }
+
+        function prevModalImage(e) {
+            if (e) e.stopPropagation();
+            if (!activeModalProduct || activeModalProduct.images.length <= 1) return;
+            activeModalProduct.currentIndex = (activeModalProduct.currentIndex - 1 + activeModalProduct.images.length) % activeModalProduct.images.length;
+            renderModalGallery();
         }
 
         function closeProductModal() {
@@ -952,7 +1080,7 @@
             document.querySelectorAll('.card').forEach(card => {
                 const name = card.getAttribute('data-name');
                 const price = card.getAttribute('data-price');
-                const img = card.querySelector('.card-img').src;
+                const img = card.querySelector('.card-img').getAttribute('src');
                 const actionContainer = card.querySelector('.card-action');
                 const cartItem = cart.find(item => item.name === name);
 
@@ -1067,7 +1195,24 @@
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') closeProductModal();
+            if (e.key === 'ArrowRight') nextModalImage();
+            if (e.key === 'ArrowLeft') prevModalImage();
         });
+
+        /* Swipe en Mobile para la Galería */
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const galleryEl = document.getElementById('pm-gallery');
+
+        galleryEl.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        galleryEl.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchStartX - touchEndX > 45) nextModalImage();
+            if (touchEndX - touchStartX > 45) prevModalImage();
+        }, { passive: true });
 
         updateApp();
     </script>
