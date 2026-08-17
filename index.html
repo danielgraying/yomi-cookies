@@ -842,17 +842,34 @@
                 alert("Agrega algunas galletas primero.");
                 return;
             }
-            
-            const phoneNumber = "573000000000";
-            let text = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
+    
+            // Número destino: +58 424-7551113
+            const phoneNumber = "584247551113";
+    
             let total = 0;
+            let totalItems = 0;
+            let itemsList = "";
 
             cart.forEach(item => {
-                text += `• ${item.name} x${item.quantity} - ${formatCOP(item.price * item.quantity)}\n`;
-                total += item.price * item.quantity;
+                const itemSubtotal = item.price * item.quantity;
+                total += itemSubtotal;
+                totalItems += item.quantity;
+                itemsList += `• ${item.quantity}x ${item.name} (${formatCOP(itemSubtotal)})\n`;
             });
-            
-            text += `\n*Total a pagar:* ${formatCOP(total)}`;
+    
+            let text = `🍪 *¡Nuevo Pedido - Yomi Cookies!* 🍪\n\n`;
+            text += `*Detalle del pedido:*\n`;
+            text += itemsList;
+            text += `\n----------------------------------\n`;
+            text += `📦 *Total galletas:* ${totalItems}\n`;
+            text += `💰 *Total a pagar:* *${formatCOP(total)}*\n`;
+            text += `----------------------------------\n\n`;
+            text += `*Datos para la entrega:*\n`;
+            text += `👤 *Nombre:* \n`;
+            text += `📍 *Dirección / Retiro:* \n`;
+            text += `💳 *Método de pago:* \n`;
+            text += `📝 *Nota o especificación:* `;
+
             window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
 
