@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú de Galletas</title>
+    <style>
+        :root {
+            --primary-pink: #f2a8b3;
+            --brand-red: #d3043a;
+            --text-dark: #000000;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --btn-gray: #f0f0f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-placeholder {
+            max-height: 40px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .cart-trigger-btn {
+            background: var(--brand-red);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .cart-trigger-btn:hover {
+            background: #b00330;
+            transform: translateY(-1px);
+        }
+
+        .cart-badge {
+            background-color: var(--primary-pink);
+            color: var(--brand-red);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 12px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Container & Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 30px 20px;
+        }
+
+        .category {
+            margin-bottom: 45px;
+        }
+
+        .category h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--brand-red);
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-pink);
+            display: inline-block;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        /* Card Style */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 1px solid #eaeaea;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background-color: #f0f0f0;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            margin-top: auto;
+            margin-bottom: 12px;
+        }
+
+        /* Card Actions */
+        .btn-add {
+            width: 100%;
+            background-color: var(--btn-gray);
+            color: var(--text-dark);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #e2e2e2;
+        }
+
+        .btn-in-cart {
+            display: flex;
+            align-items: center;
+            background-color: var(--brand-red);
+            color: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn-in-cart select {
+            background: transparent;
+            color: #fff;
+            border: none;
+            padding: 10px 10px 10px 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            min-width: 64px;
+            text-align: center;
+        }
+
+        .btn-in-cart select option {
+            color: #000;
+        }
+
+        .btn-in-cart .in-cart-label {
+            flex: 1;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0 6px;
+        }
+
+        /* Drawer Cart */
+        .cart-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .cart-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            background: #fff;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .cart-drawer.active {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 16px;
+        }
+
+        .cart-header h3 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #000;
+        }
+
+        .close-cart-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #888;
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 16px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item-img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background-color: #f0f0f0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cart-item-info strong {
+            display: block;
+            font-size: 14px;
+            color: #000;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cart-item-info span {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 20px;
+            flex-shrink: 0;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-red);
+        }
+
+        .qty-btn.trash {
+            color: #e63946;
+        }
+
+        .cart-footer {
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 2px solid var(--brand-red);
+        }
+
+        .cart-total {
+            font-size: 18px;
+            font-weight: 800;
+            color: #000;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .btn-checkout {
+            background-color: #25d366;
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        .btn-checkout:hover {
+            background-color: #1ebc57;
+        }
+
+        @media (max-width: 600px) {
+            .header-container { padding: 14px 16px; }
+            .container { padding: 16px; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .card { padding: 12px; }
+            .card-img { height: 130px; }
+            .card-title { font-size: 14px; }
+            .card-desc { font-size: 11px; margin-bottom: 8px; }
+            .card-price { font-size: 14px; margin-bottom: 8px; }
+            .btn-add { padding: 8px; font-size: 11px; }
+            .btn-in-cart select { padding: 8px 6px 8px 8px; font-size: 12px; min-width: 54px; }
+            .btn-in-cart .in-cart-label { font-size: 10px; padding: 0 4px; }
+            .cart-drawer { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <img src="https://via.placeholder.com/180x45?text=TU+LOGO" alt="Logo de la Marca" class="logo-placeholder">
+            <button class="cart-trigger-btn" onclick="toggleCartDrawer()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
+                <span>Carrito</span>
+                <span class="cart-badge" id="header-cart-badge">0</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container">
+        <main class="menu">
+            
+            <!-- CLÁSICAS -->
+            <section class="category">
+                <h2>Clásicas</h2>
+                <div class="grid">
+                    <div class="card" data-name="Chocolate Chips" data-price="4000">
+                        <img src="https://via.placeholder.com/400x300?text=Chocolate+Chips" alt="Chocolate Chips" class="card-img">
+                        <h3 class="card-title">Chocolate Chips</h3>
+                        <p class="card-desc">Galleta de vainilla con gotas de chocolate.</p>
+                        <div class="card-price">$4.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Red Velvet Chips" data-price="4000">
+                        <img src="https://via.placeholder.com/400x300?text=Red+Velvet+Chips" alt="Red Velvet Chips" class="card-img">
+                        <h3 class="card-title">Red Velvet Chips</h3>
+                        <p class="card-desc">Galleta de red velvet con gotas de chocolate blanco.</p>
+                        <div class="card-price">$4.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Doble Chocolate" data-price="4000">
+                        <img src="https://via.placeholder.com/400x300?text=Doble+Chocolate" alt="Doble Chocolate" class="card-img">
+                        <h3 class="card-title">Doble Chocolate</h3>
+                        <p class="card-desc">Galleta de chocolate con gotas de chocolate blanco.</p>
+                        <div class="card-price">$4.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Choco-Nuez" data-price="4000">
+                        <img src="https://via.placeholder.com/400x300?text=Choco-Nuez" alt="Choco-Nuez" class="card-img">
+                        <h3 class="card-title">Choco-Nuez</h3>
+                        <p class="card-desc">Galleta de vainilla con gotas de chocolate y trozo de nuez de nogal tostada.</p>
+                        <div class="card-price">$4.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RELLENAS -->
+            <section class="category">
+                <h2>Rellenas</h2>
+                <div class="grid">
+                    <div class="card" data-name="Alfajor" data-price="7500">
+                        <img src="https://via.placeholder.com/400x300?text=Alfajor" alt="Alfajor" class="card-img">
+                        <h3 class="card-title">Alfajor</h3>
+                        <p class="card-desc">Galleta de vainilla con coco natural rallado, rellena de dulce de leche.</p>
+                        <div class="card-price">$7.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Nuez y Dulce de Leche" data-price="7500">
+                        <img src="https://via.placeholder.com/400x300?text=Nuez+y+Dulce+de+Leche" alt="Nuez y Dulce de Leche" class="card-img">
+                        <h3 class="card-title">Nuez y Dulce de Leche</h3>
+                        <p class="card-desc">Galleta de vainilla con trozos de nuez de nogal, rellena de dulce de leche.</p>
+                        <div class="card-price">$7.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Cookies 'N Cream" data-price="8500">
+                        <img src="https://via.placeholder.com/400x300?text=Cookies+N+Cream" alt="Cookies 'N Cream" class="card-img">
+                        <h3 class="card-title">Cookies 'N Cream</h3>
+                        <p class="card-desc">Galleta de vainilla con trozos de galleta oreo y gotas de chocolate blanco rellena de crema oreo.</p>
+                        <div class="card-price">$8.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Nutella" data-price="8500">
+                        <img src="https://via.placeholder.com/400x300?text=Nutella" alt="Nutella" class="card-img">
+                        <h3 class="card-title">Nutella</h3>
+                        <p class="card-desc">Galleta de vainilla con gotas de chocolate, rellena de nutella.</p>
+                        <div class="card-price">$8.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Red Velvet Oreo Cheesecake" data-price="8500">
+                        <img src="https://via.placeholder.com/400x300?text=Red+Velvet+Oreo" alt="Red Velvet Oreo Cheesecake" class="card-img">
+                        <h3 class="card-title">Red Velvet Oreo Cheesecake</h3>
+                        <p class="card-desc">Galleta red velvet con trozos de galleta oreo y gotas de chocolate blanco, rellena de queso crema.</p>
+                        <div class="card-price">$8.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Carrot Cheesecake" data-price="8500">
+                        <img src="https://via.placeholder.com/400x300?text=Carrot+Cheesecake" alt="Carrot Cheesecake" class="card-img">
+                        <h3 class="card-title">Carrot Cheesecake</h3>
+                        <p class="card-desc">Galleta de vainilla con canela, trozos de nuez de nogal tostados y zanahoria finamente rayada rellena de queso crema.</p>
+                        <div class="card-price">$8.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Pie de Limón" data-price="8500">
+                        <img src="https://via.placeholder.com/400x300?text=Pie+de+Limon" alt="Pie de Limón" class="card-img">
+                        <h3 class="card-title">Pie de Limón</h3>
+                        <p class="card-desc">Galleta con ralladura de limón, trozos de galleta oreo golden y gotas de chocolate blanco rellena de crema de pie de limón.</p>
+                        <div class="card-price">$8.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Pistacho Vainilla" data-price="9500">
+                        <img src="https://via.placeholder.com/400x300?text=Pistacho+Vainilla" alt="Pistacho Vainilla" class="card-img">
+                        <h3 class="card-title">Pistacho Vainilla</h3>
+                        <p class="card-desc">Galleta de vainilla con trozos de pistachos tostados y gotas de chocolate blanco rellena de crema artesanal de pistacho.</p>
+                        <div class="card-price">$9.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Pistacho Chocolate" data-price="12500">
+                        <img src="https://via.placeholder.com/400x300?text=Pistacho+Chocolate" alt="Pistacho Chocolate" class="card-img">
+                        <h3 class="card-title">Pistacho Chocolate</h3>
+                        <p class="card-desc">Galleta de chocolate con trozos de pistachos tostados y gotas de chocolate blanco rellena de crema artesanal de pistacho.</p>
+                        <div class="card-price">$12.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PARA COMPARTIR -->
+            <section class="category">
+                <h2>Para Compartir</h2>
+                <div class="grid">
+                    <div class="card" data-name="Pack Mini Chocochips" data-price="18500">
+                        <img src="https://via.placeholder.com/400x300?text=Pack+Mini+Chocochips" alt="Pack Mini Chocochips" class="card-img">
+                        <h3 class="card-title">Pack Mini Chocochips</h3>
+                        <p class="card-desc">180gr de mini galletas de vainilla con gotas de chocolate (~50 mini galletas).</p>
+                        <div class="card-price">$18.500 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Yomi Pack" data-price="52000">
+                        <img src="https://via.placeholder.com/400x300?text=Yomi+Pack" alt="Yomi Pack" class="card-img">
+                        <h3 class="card-title">Yomi Pack</h3>
+                        <p class="card-desc">20 galletas de 40gr con topping de gotas de chocolate (10 de vainilla y 10 de chocolate).</p>
+                        <div class="card-price">$52.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Pack Mini Rellenas (x50)" data-price="82000">
+                        <img src="https://via.placeholder.com/400x300?text=Pack+Mini+Rellenas+50" alt="Pack Mini Rellenas x50" class="card-img">
+                        <h3 class="card-title">Pack Mini Rellenas (x50)</h3>
+                        <p class="card-desc">Galletas de vainilla con topping de gotas de chocolate blanco y de leche, rellenas de chocolate y chocolate blanco (50 galletas). *Pedido con min. 3h de anticipación.</p>
+                        <div class="card-price">$82.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+
+                    <div class="card" data-name="Pack Mini Rellenas (x100)" data-price="148000">
+                        <img src="https://via.placeholder.com/400x300?text=Pack+Mini+Rellenas+100" alt="Pack Mini Rellenas x100" class="card-img">
+                        <h3 class="card-title">Pack Mini Rellenas (x100)</h3>
+                        <p class="card-desc">Galletas de vainilla con topping de gotas de chocolate blanco y de leche, rellenas de chocolate y chocolate blanco (100 galletas). *Pedido con min. 3h de anticipación.</p>
+                        <div class="card-price">$148.000 COP</div>
+                        <div class="card-action"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCartDrawer()"></div>
+
+    <aside class="cart-drawer" id="cart-drawer">
+        <div class="cart-header">
+            <h3>Tu Pedido</h3>
+            <button class="close-cart-btn" onclick="toggleCartDrawer()">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p style="color: #888; text-align: center; margin-top: 20px; font-size: 14px;">El carrito está vacío</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total">$0 COP</span>
+            </div>
+            <button class="btn-checkout" onclick="checkout()">Enviar pedido por WhatsApp</button>
+        </div>
+    </aside>
+
+    <script>
+        let cart = [];
+
+        function formatCOP(amount) {
+            return '$' + amount.toLocaleString('es-CO') + ' COP';
+        }
+
+        function addToCart(name, price, img) {
+            const existingItem = cart.find(item => item.name === name);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ name, price: parseFloat(price), image: img, quantity: 1 });
+            }
+            updateApp();
+        }
+
+        function changeQuantity(name, newQty) {
+            const qty = parseInt(newQty);
+            if (qty <= 0) {
+                cart = cart.filter(item => item.name !== name);
+            } else {
+                const item = cart.find(item => item.name === name);
+                if (item) item.quantity = qty;
+            }
+            updateApp();
+        }
+
+        function toggleCartDrawer() {
+            document.getElementById('cart-drawer').classList.toggle('active');
+            document.getElementById('cart-overlay').classList.toggle('active');
+        }
+
+        function updateApp() {
+            renderProductButtons();
+            renderCart();
+        }
+
+        function renderProductButtons() {
+            document.querySelectorAll('.card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                const price = card.getAttribute('data-price');
+                const img = card.querySelector('.card-img').src;
+                const actionContainer = card.querySelector('.card-action');
+                const cartItem = cart.find(item => item.name === name);
+
+                if (cartItem && cartItem.quantity > 0) {
+                    actionContainer.innerHTML = `
+                        <div class="btn-in-cart">
+                            <select onchange="changeQuantity('${name}', this.value)">
+                                ${[1,2,3,4,5,6,7,8,9,10].map(n => 
+                                    `<option value="${n}" ${n === cartItem.quantity ? 'selected' : ''}>▾ ${n}</option>`
+                                ).join('')}
+                                <option value="0">0 (Quitar)</option>
+                            </select>
+                            <span class="in-cart-label">En Carrito</span>
+                        </div>
+                    `;
+                } else {
+                    actionContainer.innerHTML = `
+                        <button class="btn-add" onclick="addToCart('${name}', ${price}, '${img}')">Agregar al carrito</button>
+                    `;
+                }
+            });
+        }
+
+        function renderCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+            const headerCartBadge = document.getElementById('header-cart-badge');
+            
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            let totalItems = 0;
+
+            cart.forEach((item) => {
+                total += item.price * item.quantity;
+                totalItems += item.quantity;
+                
+                const itemElement = document.createElement('div');
+                itemElement.classList.add('cart-item');
+                const decrementIcon = item.quantity === 1 ? '✕' : '−';
+
+                itemElement.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-img">
+                    <div class="cart-item-info">
+                        <strong>${item.name}</strong>
+                        <span>${formatCOP(item.price * item.quantity)}</span>
+                    </div>
+                    <div class="qty-controls">
+                        <button class="qty-btn ${item.quantity === 1 ? 'trash' : ''}" onclick="changeQuantity('${item.name}', ${item.quantity - 1})">
+                            ${decrementIcon}
+                        </button>
+                        <span style="font-size: 13px; font-weight: 700; color: #000;">${item.quantity}</span>
+                        <button class="qty-btn" onclick="changeQuantity('${item.name}', ${item.quantity + 1})">+</button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(itemElement);
+            });
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="color: #888; text-align: center; margin-top: 20px; font-size: 14px;">El carrito está vacío</p>';
+            }
+
+            cartTotalElement.innerText = formatCOP(total);
+            headerCartBadge.innerText = totalItems;
+        }
+
+        function checkout() {
+            if (cart.length === 0) {
+                alert("Agrega algunas galletas primero.");
+                return;
+            }
+            
+            const phoneNumber = "573000000000";
+            let text = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
+            let total = 0;
+
+            cart.forEach(item => {
+                text += `• ${item.name} x${item.quantity} - ${formatCOP(item.price * item.quantity)}\n`;
+                total += item.price * item.quantity;
+            });
+            
+            text += `\n*Total a pagar:* ${formatCOP(total)}`;
+            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
+        }
+
+        updateApp();
+    </script>
+</body>
+</html>
