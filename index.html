@@ -851,21 +851,16 @@
                 const itemSubtotal = item.price * item.quantity;
                 total += itemSubtotal;
                 totalItems += item.quantity;
-                itemsList += `• ${item.quantity}x ${item.name} (${formatCOP(itemSubtotal)})\n`;
+                itemsList += `- ${item.quantity}x ${item.name} (${formatCOP(itemSubtotal)})\n`;
             });
             
-            let text = `🍪 *¡Nuevo Pedido - Yomi Cookies!* 🍪\n\n`;
-            text += `*Detalle del pedido:*\n`;
+            let text = "¡Deseo hacer un pedido!\n\n";
+            text += "*Detalle del pedido:*\n";
             text += itemsList;
-            text += `\n----------------------------------\n`;
-            text += `📦 *Total galletas:* ${totalItems}\n`;
-            text += `💰 *Total a pagar:* *${formatCOP(total)}*\n`;
-            text += `----------------------------------\n\n`;
-            text += `*Datos para la entrega:*\n`;
-            text += `👤 *Nombre:* \n`;
-            text += `📍 *Dirección / Retiro:* \n`;
-            text += `💳 *Método de pago:* \n`;
-            text += `📝 *Nota o especificación:* `;
+            text += "\n----------------------------------\n";
+            text += `Total galletas: ${totalItems}\n`;
+            text += `Total a pagar: *${formatCOP(total)}*\n`;
+            text += "----------------------------------";
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`, '_blank');
         }
